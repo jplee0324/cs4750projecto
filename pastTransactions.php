@@ -4,8 +4,11 @@ require('db-commands.php');
 ?>
 
 <?php
-$events = getAllEvents();
+
+$transactions = viewTransactions($_COOKIE['pwd']);
+
 ?>
+
 <html>
   <head>
     <link
@@ -23,41 +26,44 @@ $events = getAllEvents();
   </script>
   <body>
     <div id="tophalf">
-      <h1>INVITE UP</h1>
       <nav>
-        <a href="/webpl-project/logout.php">Log Out</a>
-        <a href="/webpl-project/events.php" class="active">Events</a>
-        <a href="/webpl-project/user-home.php"><?php echo $_COOKIE['firstName'] ?> <?php echo $_COOKIE['lastName'] ?></a>
+        <h1>View Transactions</h1>
+        <a href="/database-project/logout.php">Log Out</a>
+        <a href="/database-project/events.php">Friends</a>
+        <a href="/database-project/pastTransactions.php">Transactions</a>
+        <a href="/database-project/user-home.php" class="active"><?php echo $_COOKIE['firstName'] ?> <?php echo $_COOKIE['lastName'] ?></a>
       </nav>
       <div id="middle"></div>
     </div>
     <div id="bottomhalf">
-      <h3 style="padding: 10px;">Events Attending</h3>
-      <div class="card-deck">
-      <?php foreach ($events as $event): ?>
-  <div class="card">
-    
-    <div class="card-body">
-      <h5 class="card-title"><?php echo $event['name']; ?> </h5>
-      <p class="card-text"><?php echo $event['description']; ?> </p>
-      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-    </div>
-  </div>
-  <?php endforeach; ?>
-</div>
-      <h3 style="padding: 10px;">Events Your Friends Created</h3>
-      <div class="card-deck">
-      <?php foreach ($events as $event): ?>
-  <div class="card">
-    
-    <div class="card-body">
-      <h5 class="card-title"><?php echo $event['name']; ?> </h5>
-      <p class="card-text"><?php echo $event['description']; ?> </p>
-      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-    </div>
-  </div>
-  <?php endforeach; ?>
-</div>
+      <h3 style="padding: 10px;">Past Transactions</h3>
+      <a href="/database-project/transactionsToCSV.php">Get CSV</a>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Transaction ID</th>
+            <th scope="col">Sender</th>
+            <th scope="col">Recipient</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($transactions as $transaction): ?>
+            <tr>
+              <th scope="row"><?php echo $transaction['transactionID']; ?></th>
+              <td><?php echo $transaction['userID']; ?></td>
+              <td><?php echo $transaction['recipient']; ?></td>
+              <td><?php echo $transaction['amount']; ?></td>
+              <td><?php echo $transaction['date']; ?></td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+
+
+
+
     </div>
   </body>
 </html>
