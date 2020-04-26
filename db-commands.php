@@ -131,7 +131,7 @@ function depositBalance($userID, $amount)
 
    $query = "UPDATE user
 	         SET balance  = balance + :amount
-	         WHERE userID = :userID;"
+	         WHERE userID = :userID";
 
    $statement = $db->prepare($query);
    $statement->bindValue(':userID', $userID);
@@ -149,7 +149,7 @@ function withdrawBalance($userID, $amount)
 
    $query = "UPDATE user
 	         SET balance  = balance - :amount
-	         WHERE userID = :userID;"
+	         WHERE userID = :userID";
 
    $statement = $db->prepare($query);
    $statement->bindValue(':userID', $userID);
@@ -187,7 +187,7 @@ function addFriend($userID, $friendID)
    global $db;
 
    $query = "INSERT INTO friends 
-            VALUES (:userID, :friendID);"
+            VALUES (:userID, :friendID)";
 
    $statement = $db->prepare($query);
    $statement->bindValue(':userID', $userID);
@@ -204,7 +204,7 @@ function addblocked($userID, $blockedID)
    global $db;
 
    $query = "INSERT INTO blocked 
-            VALUES (:userID, :blockedID);"
+            VALUES (:userID, :blockedID)";
 
    $statement = $db->prepare($query);
    $statement->bindValue(':userID', $userID);
@@ -221,7 +221,7 @@ function removeFriend($userID, $friendID)
    global $db;
 
    $query = "DELETE FROM friends
-	         WHERE userID = :userID AND friendID = :friendID;"
+	         WHERE userID = :userID AND friendID = :friendID";
 
    $statement = $db->prepare($query);
    $statement->bindValue(':userID', $userID);
@@ -238,7 +238,7 @@ function removeBlocked($userID, $blockedID)
    global $db;
 
    $query = "DELETE FROM blocked
-	         WHERE userID = :userID AND blockedID = :blockedID;"
+	         WHERE userID = :userID AND blockedID = :blockedID";
 
    $statement = $db->prepare($query);
    $statement->bindValue(':userID', $userID);
