@@ -1,0 +1,17 @@
+#login {
+  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #FFFFFF;
+  padding: 50px;
+}
+
+body {
+  background-color: #eaedf4;
+}
+
+h1:hover {
+  font-weight: 900;
+}

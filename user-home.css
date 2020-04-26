@@ -1,0 +1,44 @@
+a {
+    display: inline;
+    padding: 20px;
+    align-items: flex-end;
+    float: right;
+    color: black;
+  }
+  
+  a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+  
+  a.active {
+    color: black;
+    font-weight: bolder;
+  }
+  
+  h1 {
+    padding: 20px;
+    font-weight: bold;
+  }
+  
+  #middle {
+    background-color: #eaedf4;
+    padding: 40px;
+  }
+  
+  #tophalf {
+    background-color: #eaedf4;
+  }
+  
+  #bottomhalf {
+    padding: 30px;
+    margin-left: 5px;
+  }
+  footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+  }
+  
