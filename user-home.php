@@ -9,7 +9,7 @@ $event_to_update = '';
 
 if (!empty($_POST['db-btn']))
 {
-   if ($_POST['db-btn'] == "Insert")
+   if ($_POST['db-btn'] == "Transfer")
    {
       if (!empty($_POST['name']) && !empty($_POST['description'])){
          addEvent($_POST['name'], $_POST['description'], $_COOKIE['pwd']);
@@ -18,7 +18,7 @@ if (!empty($_POST['db-btn']))
       else 
          $msg = "Enter event information to create a new event";
    }
-   else if($_POST['db-btn'] == "Update Event")  
+   else if($_POST['db-btn'] == "Send")  
    {
       if (!empty($_POST['name']) && !empty($_POST['description']))
          updateEventInfo($_POST['name'], $_POST['description'], $_COOKIE['pwd']);
@@ -37,6 +37,7 @@ if (!empty($_POST['action']))
 }
 
 $events = getAllSpecificEvents($_COOKIE['pwd']);
+$balance = getBalance($_COOKIE['pwd']);
 
 ?>
 
@@ -52,29 +53,30 @@ $events = getAllSpecificEvents($_COOKIE['pwd']);
   </head>
   <body>
     <div id="tophalf">
-      <h1>INVITE UP</h1>
+      
       <nav>
-        <a href="/webpl-project/logout.php">Log Out</a>
-        
-        <a href="/webpl-project/events.php">Events</a>
-        <a href="/webpl-project/user-home.php" class="active"><?php echo $_COOKIE['firstName'] ?> <?php echo $_COOKIE['lastName'] ?></a>
+      <h1>Payment!</h1>
+        <a href="/database-project/logout.php">Log Out</a>
+        <a href="/database-project/events.php">Friends</a>
+        <a href="/database-project/events.php">Transactions</a>
+        <a href="/database-project/user-home.php" class="active"><?php echo $_COOKIE['firstName'] ?> <?php echo $_COOKIE['lastName'] ?></a>
       </nav>
       <div id="middle">
-        <h3>Invitations made easy</h3>
-        <h5>Make an event and invite your friends to it.</h5>
+        <h3>Current Balance: $<?php echo $balance['balance'] ?></h3>
+        <h5>Make a payment:</h5>
         <form action="user-home.php" method="post">
           <div class="form-group">
-            Event Name:
+            Recipient Name:
             <input type="text" class="form-control" name="name" />        
           </div>  
           <div class="form-group">
-            Description:
+            Amount:
             <input type="text" class="form-control" name="description"/>        
           </div>  
           
           <div class="form-group">
-            <input type="submit" value="Insert" class="btn btn-dark" name="db-btn" title="Insert event into table"/>
-            <input type="submit" value="Update Event" class="btn btn-dark" name="db-btn" title="Update 'events' info" />
+            <input type="submit" value="Transfer" class="btn btn-dark" name="db-btn" title="Insert event into table"/>
+            <input type="submit" value="Send" class="btn btn-dark" name="db-btn" title="Update 'events' info" />
             <small class="text-danger"><?php echo $msg ?></small>
           </div>  
         </form>
@@ -82,23 +84,6 @@ $events = getAllSpecificEvents($_COOKIE['pwd']);
     </div>
     <div id="bottomhalf">
     </table>
-      <h3>Events Created By You</h3>
-      <div class="card-deck">
-      
-      <?php foreach ($events as $event): ?>
-  <div class="card">
-
-    <div class="card-body">
-      <h5 class="card-title" id=<?php echo $event['name']; ?>><?php echo $event['name']; ?> </h5>
-      <p class="card-text"><?php echo $event['description']; ?> </p>
-      <form action="user-home.php" method="post">
-            <input type="submit" value="Delete" name="action" class="btn btn-danger" />      
-            <input type="hidden" name="name" value="<?php echo $event['name'] ?>" />
-          </form>
-    </div>
-  </div>
-  <?php endforeach; ?>
-</div>
     
   </body>
 </html>

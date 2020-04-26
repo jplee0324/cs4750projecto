@@ -9,7 +9,6 @@
 // - execute the query    press Ctrl+Enter
 // (default port to mySQL database in XAMPP is 3306)
 
-// database name = web4640
 //   Note: Looking in the wrong database and/or wrong table may results in either
 //         cannot connect to the database, not find table, or no result set.
 //         Thus, specify the correct database name
@@ -18,10 +17,10 @@
 $hostname = 'localhost';
 
 // database name
-$dbname = 'payment-project';
+$dbname = 'payment_project';
 
 // database credentials
-$username = 'johnr';
+$username = 'john';
 $password = 'password';
 
 // DSN (Data Source Name) specifies the host computer for the MySQL database 
