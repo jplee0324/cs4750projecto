@@ -64,7 +64,7 @@ function viewTransactions($userID)
    $statement->execute();
 	
    // fetchAll() returns an array for all of the rows in the result set
-   $results = $statement->fetchAll();
+   $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 	
    // closes the cursor and frees the connection to the server so other SQL statements may be issued
    $statement->closecursor();
