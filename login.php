@@ -1,6 +1,6 @@
 <?php
 //John Ramirez, jr5xw
-//Reeya Rabena, rvr2fg
+//Jonathan Lee, jl5ut
 require('connectdb.php');
 require('db-commands.php');
 ?>
