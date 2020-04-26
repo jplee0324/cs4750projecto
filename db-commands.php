@@ -265,6 +265,70 @@ function getBalance($userID){
    return $result;
 }
 
+function updateUserBalance($firstName, $lastName, $amount, $userID){
+   global $db;
+
+   //Subtracts amount from the user who sent the money and updates balance of recipient
+   $query = "SELECT balance FROM user WHERE userID=:userID";
+   $statement = $db->prepare($query);
+   $statement->bindValue(':userID', $userID);
+   $statement->execute();
+
+   $senderAmount = $statement->fetch();
+	
+
+   $statement->closecursor();
+
+   $senderNewBalance = floatval($senderAmount['balance']) - floatval($amount);
+
+   if($senderNewBalance >= 0){
+
+   $query2 = "UPDATE user SET balance=:senderNewBalance WHERE userID=:userID";
+   $statement2 = $db->prepare($query2);
+   $statement2->bindValue(':senderNewBalance', $senderNewBalance);
+   $statement2->bindValue(':userID', $userID);
+   $statement2->execute();
+   $statement2->closeCursor();
+   
+   //Totals up and updates balance of the recipient
+   $query3 = "SELECT balance, userID FROM user WHERE firstName=:firstName AND lastName=:lastName";
+   $statement3 = $db->prepare($query3);
+   $statement3->bindValue(':firstName', $firstName);
+   $statement3->bindValue(':lastName', $lastName);
+   $statement3->execute();
+
+   $recipient = $statement3->fetch();
+	
+
+   $statement3->closecursor();
+
+   $total = floatval($recipient['balance']) + floatval($amount);
+
+
+   $query4 = "UPDATE user SET balance=:total WHERE firstName=:firstName AND lastName=:lastName";
+   $statement4 = $db->prepare($query4);
+   $statement4->bindValue(':firstName', $firstName);
+   $statement4->bindValue(':lastName', $lastName);
+   $statement4->bindValue(':total', $total);
+   $statement4->execute();
+   $statement4->closeCursor();
+
+   //Update the transaciton table
+   $query5 = "INSERT INTO transactions (userID, recipient, amount, date) VALUES (:userID, :recipient, :amount, :date)";
+   $statement5 = $db->prepare($query5);
+   $statement5->bindValue(':userID', $userID);
+   $statement5->bindValue(':recipient', $recipient['userID']);
+   $statement5->bindValue(':amount', floatval($amount));
+   $statement5->bindValue(':date', date("Y-m-d"));
+   $statement5->execute();
+   $statement5->closeCursor();
+
+   echo '<script>alert("Money successfully sent!")</script>';
+   }else{
+      echo '<script>alert("You cannot send money greater than your balance!")</script>';
+   }
+}
+
 
 
 ?>

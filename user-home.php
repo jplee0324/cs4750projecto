@@ -9,21 +9,13 @@ $event_to_update = '';
 
 if (!empty($_POST['db-btn']))
 {
-   if ($_POST['db-btn'] == "Transfer")
+   if($_POST['db-btn'] == "Send Money")  
    {
-      if (!empty($_POST['name']) && !empty($_POST['description'])){
-         addEvent($_POST['name'], $_POST['description'], $_COOKIE['pwd']);
-         $msg = "Successfully entered!!";
+      if (!empty($_POST['firstName']) && !empty($_POST['lastName']) && !empty($_POST['amount'])){
+         updateUserBalance($_POST['firstName'], $_POST['lastName'], $_POST['amount'], $_COOKIE['pwd']);
       }
-      else 
-         $msg = "Enter event information to create a new event";
-   }
-   else if($_POST['db-btn'] == "Send")  
-   {
-      if (!empty($_POST['name']) && !empty($_POST['description']))
-         updateEventInfo($_POST['name'], $_POST['description'], $_COOKIE['pwd']);
       else
-         $msg = "Enter event information to update";
+         $msg = "Enter payment information to send";
    }
 }
 
@@ -36,7 +28,6 @@ if (!empty($_POST['action']))
    }
 }
 
-$events = getAllSpecificEvents($_COOKIE['pwd']);
 $balance = getBalance($_COOKIE['pwd']);
 
 ?>
@@ -66,17 +57,20 @@ $balance = getBalance($_COOKIE['pwd']);
         <h5>Make a payment:</h5>
         <form action="user-home.php" method="post">
           <div class="form-group">
-            Recipient Name:
-            <input type="text" class="form-control" name="name" />        
+            Recipient First Name:
+            <input type="text" class="form-control" name="firstName" />        
+          </div>  
+          <div class="form-group">
+            Recipient Last Name:
+            <input type="text" class="form-control" name="lastName" />        
           </div>  
           <div class="form-group">
             Amount:
-            <input type="text" class="form-control" name="description"/>        
+            <input type="text" class="form-control" name="amount"/>        
           </div>  
           
           <div class="form-group">
-            <input type="submit" value="Transfer" class="btn btn-dark" name="db-btn" title="Insert event into table"/>
-            <input type="submit" value="Send" class="btn btn-dark" name="db-btn" title="Update 'events' info" />
+            <input type="submit" value="Send Money" class="btn btn-dark" name="db-btn" title="Update 'events' info" />
             <small class="text-danger"><?php echo $msg ?></small>
           </div>  
         </form>
