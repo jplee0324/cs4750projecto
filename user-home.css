@@ -20,6 +20,10 @@ a {
     padding: 20px;
     font-weight: bold;
   }
+
+  h5 {
+    padding: 10px
+  }
   
   #middle {
     background-color: #eaedf4;

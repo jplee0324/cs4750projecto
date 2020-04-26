@@ -147,6 +147,21 @@ function withdrawBalance($userID, $amount)
 {
    global $db;
 
+   //Subtracts amount from the user who sent the money and updates balance of recipient
+   $query = "SELECT balance FROM user WHERE userID=:userID";
+   $statement = $db->prepare($query);
+   $statement->bindValue(':userID', $userID);
+   $statement->execute();
+
+   $senderAmount = $statement->fetch();
+	
+
+   $statement->closecursor();
+
+   $senderNewBalance = floatval($senderAmount['balance']) - floatval($amount);
+
+   if($senderNewBalance >= 0){
+
    $query = "UPDATE user
 	         SET balance  = balance - :amount
 	         WHERE userID = :userID";
@@ -159,6 +174,9 @@ function withdrawBalance($userID, $amount)
    // false otherwise
    
    $statement->closeCursor();
+   }else{
+      echo '<script>alert("You cannot withdraw money greater than your balance!")</script>';
+   }
 }
 
 function sendTransaction($userID, $recipient, $amount){
@@ -265,7 +283,7 @@ function getBalance($userID){
    return $result;
 }
 
-function updateUserBalance($firstName, $lastName, $amount, $userID){
+function sendMoney($firstName, $lastName, $amount, $userID){
    global $db;
 
    //Subtracts amount from the user who sent the money and updates balance of recipient

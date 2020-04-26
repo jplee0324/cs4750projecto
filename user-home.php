@@ -9,10 +9,26 @@ $event_to_update = '';
 
 if (!empty($_POST['db-btn']))
 {
-   if($_POST['db-btn'] == "Send Money")  
+  if ($_POST['db-btn'] == "Deposit")
+   {
+      if (!empty($_POST['amount-dw'])){
+         depositBalance($_COOKIE['pwd'], $_POST['amount-dw']);
+      }
+      else 
+         $msg = "Enter event information to create a new event";
+   }
+   else if ($_POST['db-btn'] == "Withdraw")
+   {
+      if (!empty($_POST['amount-dw'])){
+         withdrawBalance($_COOKIE['pwd'], $_POST['amount-dw']);
+      }
+      else 
+         $msg = "Enter event information to create a new event";
+   }
+   else if($_POST['db-btn'] == "Send Money")  
    {
       if (!empty($_POST['firstName']) && !empty($_POST['lastName']) && !empty($_POST['amount'])){
-         updateUserBalance($_POST['firstName'], $_POST['lastName'], $_POST['amount'], $_COOKIE['pwd']);
+         sendMoney($_POST['firstName'], $_POST['lastName'], $_POST['amount'], $_COOKIE['pwd']);
       }
       else
          $msg = "Enter payment information to send";
@@ -70,7 +86,20 @@ $balance = getBalance($_COOKIE['pwd']);
           </div>  
           
           <div class="form-group">
-            <input type="submit" value="Send Money" class="btn btn-dark" name="db-btn" title="Update 'events' info" />
+            <input type="submit" value="Send Money" class="btn btn-dark" name="db-btn" title="Send money to other people" />
+            <small class="text-danger"><?php echo $msg ?></small>
+          </div>  
+        </form>
+        <h5>Make a deposit/withdrawal:</h5>
+        <form action="user-home.php" method="post">
+          <div class="form-group">
+            Amount:
+            <input type="text" class="form-control" name="amount-dw"/>        
+          </div>  
+          
+          <div class="form-group">
+            <input type="submit" value="Deposit" class="btn btn-dark" name="db-btn" title="Deposit money into balance" />
+            <input type="submit" value="Withdraw" class="btn btn-dark" name="db-btn" title="Withdraw money from balance" />
             <small class="text-danger"><?php echo $msg ?></small>
           </div>  
         </form>
