@@ -20,23 +20,97 @@ function getAllSpecificEvents($userID)
 function insertUser($userID, $firstName, $lastName){
    global $db;
 	
-   $query = "INSERT INTO users (userID, firstName, lastName) VALUES (:userID, :firstName, :lastName)";
+   $query = "INSERT INTO user (userID, firstName, lastName, balance) VALUES (:userID, :firstName, :lastName, :balance)";
 
    $statement = $db->prepare($query);
    $statement->bindValue(':userID', $userID);
    $statement->bindValue(':firstName', $firstName);
    $statement->bindValue(':lastName', $lastName);
+   $statement->bindValue(':balance', 0.0);
    $statement->execute();     // if the statement is successfully executed, execute() returns true
    // false otherwise
 		
    $statement->closeCursor();
 }
 
-function getNonUserEvents($userID)
+
+// VIEW FUNCTIONS
+
+function viewPersonalInfo($userID)
 {
    global $db;
-   $query = "select * from friends";
+
+   $query = "SELECT * FROM user WHERE userID=:userID";
    $statement = $db->prepare($query);
+   $statement->bindValue(':userID', $userID);
+   $statement->execute();
+	
+   // fetchAll() returns an array for all of the rows in the result set
+   $results = $statement->fetchAll();
+	
+   // closes the cursor and frees the connection to the server so other SQL statements may be issued
+   $statement->closecursor();
+	
+   return $results;
+}
+
+function viewTransactions($userID)
+{
+   global $db;
+
+   $query = "SELECT * FROM transactions WHERE userID=:userID OR recipient=:userID";
+   $statement = $db->prepare($query);
+   $statement->bindValue(':userID', $userID);
+   $statement->execute();
+	
+   // fetchAll() returns an array for all of the rows in the result set
+   $results = $statement->fetchAll();
+	
+   // closes the cursor and frees the connection to the server so other SQL statements may be issued
+   $statement->closecursor();
+	
+   return $results;
+}
+
+function viewFriends($userID)
+{
+   global $db;
+
+   $query = "SELECT 
+               friends.friendID friendID, 
+               user.firstName firstName, 
+               user.lastName lastName
+            FROM friends
+            LEFT JOIN user ON user.userID = friends.friendID
+            WHERE friends.userID = :userID";
+
+   $statement = $db->prepare($query);
+   $statement->bindValue(':userID', $userID);
+   $statement->execute();
+	
+   // fetchAll() returns an array for all of the rows in the result set
+   $results = $statement->fetchAll();
+	
+   // closes the cursor and frees the connection to the server so other SQL statements may be issued
+   $statement->closecursor();
+	
+   return $results;
+}
+
+function viewBlocked($userID)
+{
+   global $db;
+
+   $query = "SELECT 
+               blocked.blockedID blockedID, 
+               user.firstName firstName, 
+               user.lastName lastName
+            FROM friends
+            LEFT JOIN user ON user.userID = friends.friendID
+            WHERE blocked.userID = :userID";
+
+   $statement = $db->prepare($query);
+   $statement->bindValue(':userID', $userID);
    $statement->execute();
 	
    // fetchAll() returns an array for all of the rows in the result set
@@ -49,33 +123,54 @@ function getNonUserEvents($userID)
 }
 
 
-function getAllEvents()
+# BALANCE INTERACTION
+
+function depositBalance($userID, $amount)
 {
    global $db;
-   $query = "select * from events";
+
+   $query = "UPDATE user
+	         SET balance  = balance + :amount
+	         WHERE userID = :userID;"
+
    $statement = $db->prepare($query);
-   $statement->execute();
-	
-   // fetchAll() returns an array for all of the rows in the result set
-   $results = $statement->fetchAll();
-	
-   // closes the cursor and frees the connection to the server so other SQL statements may be issued
-   $statement->closecursor();
-	
-   return $results;
+   $statement->bindValue(':userID', $userID);
+   $statement->bindValue(':amount', $amount);
+   $statement->execute();     
+   // if the statement is successfully executed, execute() returns true
+   // false otherwise
+   
+   $statement->closeCursor();
 }
 
-
-function addEvent($name, $description, $userID)
+function withdrawBalance($userID, $amount)
 {
    global $db;
-	
-   $query = "INSERT INTO events (name, description, userID) VALUES (:name, :description, :userID)";
+
+   $query = "UPDATE user
+	         SET balance  = balance - :amount
+	         WHERE userID = :userID;"
 
    $statement = $db->prepare($query);
-   $statement->bindValue(':name', $name);
-   $statement->bindValue(':description', $description);
    $statement->bindValue(':userID', $userID);
+   $statement->bindValue(':amount', $amount);
+   $statement->execute();     
+   // if the statement is successfully executed, execute() returns true
+   // false otherwise
+   
+   $statement->closeCursor();
+}
+
+function sendTransaction($userID, $recipient, $amount){
+   global $db;
+	
+   $query = "INSERT INTO transactions (userID, recipient, amount, date) VALUES (:userID, :recipient, :amount, :date)";
+
+   $statement = $db->prepare($query);
+   $statement->bindValue(':userID', $userID);
+   $statement->bindValue(':recipient', $recipient);
+   $statement->bindValue(':amount', $amount);
+   $statement->bindValue(':date', date("Y-m-d h:i:sa"));
    $statement->execute();     // if the statement is successfully executed, execute() returns true
    // false otherwise
 		
@@ -83,29 +178,80 @@ function addEvent($name, $description, $userID)
 }
 
 
-function updateEventInfo($name, $description, $userID)
+
+
+// ADD/REMOVE FROM FRIENDS/BLOCKED LIST FUNCTIONS
+
+function addFriend($userID, $friendID)
 {
    global $db;
 
-   $query = "UPDATE events SET description=:description, userID=:userID WHERE name=:name";
+   $query = "INSERT INTO friends 
+            VALUES (:userID, :friendID);"
+
    $statement = $db->prepare($query);
-   $statement->bindValue(':name', $name);
-   $statement->bindValue(':description', $description);
    $statement->bindValue(':userID', $userID);
-   $statement->execute();
+   $statement->bindValue(':friendID', $friendID);
+   $statement->execute();     
+   // if the statement is successfully executed, execute() returns true
+   // false otherwise
+   
    $statement->closeCursor();
 }
 
-
-function deleteEvent($name)
+function addblocked($userID, $blockedID)
 {
    global $db;
-	
-   $query = "DELETE FROM events WHERE name=:name";
+
+   $query = "INSERT INTO blocked 
+            VALUES (:userID, :blockedID);"
+
    $statement = $db->prepare($query);
-   $statement->bindValue(':name', $name);
-   $statement->execute();
+   $statement->bindValue(':userID', $userID);
+   $statement->bindValue(':blockedID', $blockedID);
+   $statement->execute();     
+   // if the statement is successfully executed, execute() returns true
+   // false otherwise
+   
    $statement->closeCursor();
 }
+
+function removeFriend($userID, $friendID)
+{
+   global $db;
+
+   $query = "DELETE FROM friends
+	         WHERE userID = :userID AND friendID = :friendID;"
+
+   $statement = $db->prepare($query);
+   $statement->bindValue(':userID', $userID);
+   $statement->bindValue(':friendID', $friendID);
+   $statement->execute();     
+   // if the statement is successfully executed, execute() returns true
+   // false otherwise
+   
+   $statement->closeCursor();
+}
+
+function removeBlocked($userID, $blockedID)
+{
+   global $db;
+
+   $query = "DELETE FROM blocked
+	         WHERE userID = :userID AND blockedID = :blockedID;"
+
+   $statement = $db->prepare($query);
+   $statement->bindValue(':userID', $userID);
+   $statement->bindValue(':blockedID', $blockedID);
+   $statement->execute();     
+   // if the statement is successfully executed, execute() returns true
+   // false otherwise
+   
+   $statement->closeCursor();
+}
+
+
+
+
+
 ?>
-
