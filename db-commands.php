@@ -250,7 +250,20 @@ function removeBlocked($userID, $blockedID)
    $statement->closeCursor();
 }
 
+function getBalance($userID){
+   global $db;
+   $query = "SELECT balance FROM user WHERE userID=:userID";
+   $statement = $db->prepare($query);
+   $statement->bindValue(':userID', $userID);
+   $statement->execute();
 
+   $result = $statement->fetch();
+	
+   // closes the cursor and frees the connection to the server so other SQL statements may be issued
+   $statement->closecursor();
+	
+   return $result;
+}
 
 
 

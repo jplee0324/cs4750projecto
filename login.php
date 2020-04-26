@@ -1,6 +1,6 @@
 <?php
 //John Ramirez, jr5xw
-//Jonathan Lee, jl5ut
+//Johnathan Lee, jl5ut
 require('connectdb.php');
 require('db-commands.php');
 ?>
@@ -18,14 +18,14 @@ require('db-commands.php');
   </head>
   <body>
     <section id="login">
-      <h1>INVITE UP</h1>
-      <h5>Log in to start making events and inviting your friends</h5>
+      <h1>Payment!</h1>
+      <h5>Log in to start making payments!</h5>
 
       <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post" onsubmit="onClickMe()">
       First Name: <input type="text" name="firstName" class="form-control" autofocus required /> <br/>
       Last Name: <input type="text" name="lastName" class="form-control" autofocus required /> <br/>
       Password: <input type="password" name="pwd" class="form-control" required /> <br/>
-      <input type="submit" value="Sign In/Sign Up" class="btn btn-light"  />   
+      <input type="submit" value="Sign In" class="btn btn-light"  />   
     </form>
     </section>
 
