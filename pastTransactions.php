@@ -30,8 +30,8 @@ $transactions = viewTransactions($_COOKIE['pwd']);
         <h1>View Transactions</h1>
         <a href="/database-project/logout.php">Log Out</a>
         <a href="/database-project/friends.php">Friends</a>
-        <a href="/database-project/pastTransactions.php">Transactions</a>
-        <a href="/database-project/user-home.php" class="active"><?php echo $_COOKIE['firstName'] ?> <?php echo $_COOKIE['lastName'] ?></a>
+        <a href="/database-project/pastTransactions.php" class="active">Transactions</a>
+        <a href="/database-project/user-home.php" ><?php echo $_COOKIE['firstName'] ?> <?php echo $_COOKIE['lastName'] ?></a>
       </nav>
       <div id="middle"></div>
     </div>
