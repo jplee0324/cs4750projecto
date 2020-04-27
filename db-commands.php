@@ -77,12 +77,10 @@ function viewFriends($userID)
    global $db;
 
    $query = "SELECT 
-               friends.friendID friendID, 
-               user.firstName firstName, 
-               user.lastName lastName
+               fFirstName, 
+               fLastName
             FROM friends
-            LEFT JOIN user ON user.userID = friends.friendID
-            WHERE friends.userID = :userID";
+            WHERE userID = :userID";
 
    $statement = $db->prepare($query);
    $statement->bindValue(':userID', $userID);
@@ -101,13 +99,11 @@ function viewBlocked($userID)
 {
    global $db;
 
-   $query = "SELECT 
-               blocked.blockedID blockedID, 
-               user.firstName firstName, 
-               user.lastName lastName
-            FROM friends
-            LEFT JOIN user ON user.userID = friends.friendID
-            WHERE blocked.userID = :userID";
+   $query = "SELECT  
+               bFirstName, 
+               bLastName
+            FROM blocked
+            WHERE userID = :userID";
 
    $statement = $db->prepare($query);
    $statement->bindValue(':userID', $userID);
@@ -200,16 +196,17 @@ function sendTransaction($userID, $recipient, $amount){
 
 // ADD/REMOVE FROM FRIENDS/BLOCKED LIST FUNCTIONS
 
-function addFriend($userID, $friendID)
+function addFriend($userID, $fFirstName, $fLastName)
 {
    global $db;
 
    $query = "INSERT INTO friends 
-            VALUES (:userID, :friendID)";
+            VALUES (:userID, :fFirstName, :fLastName)";
 
    $statement = $db->prepare($query);
    $statement->bindValue(':userID', $userID);
-   $statement->bindValue(':friendID', $friendID);
+   $statement->bindValue(':fFirstName', $fFirstName);
+   $statement->bindValue(':fLastName', $fLastName);
    $statement->execute();     
    // if the statement is successfully executed, execute() returns true
    // false otherwise
@@ -217,16 +214,17 @@ function addFriend($userID, $friendID)
    $statement->closeCursor();
 }
 
-function addblocked($userID, $blockedID)
+function addBlocked($userID, $bFirstName, $bLastName)
 {
    global $db;
 
    $query = "INSERT INTO blocked 
-            VALUES (:userID, :blockedID)";
+            VALUES (:userID, :bFirstName, :bLastName)";
 
    $statement = $db->prepare($query);
    $statement->bindValue(':userID', $userID);
-   $statement->bindValue(':blockedID', $blockedID);
+   $statement->bindValue(':bFirstName', $bFirstName);
+   $statement->bindValue(':bLastName', $bLastName);
    $statement->execute();     
    // if the statement is successfully executed, execute() returns true
    // false otherwise
@@ -234,16 +232,17 @@ function addblocked($userID, $blockedID)
    $statement->closeCursor();
 }
 
-function removeFriend($userID, $friendID)
+function removeFriend($userID, $fFirstName, $fLastName)
 {
    global $db;
 
    $query = "DELETE FROM friends
-	         WHERE userID = :userID AND friendID = :friendID";
+	         WHERE userID = :userID AND fFirstName = :fFirstName AND fLastName = :fLastName";
 
    $statement = $db->prepare($query);
    $statement->bindValue(':userID', $userID);
-   $statement->bindValue(':friendID', $friendID);
+   $statement->bindValue(':fFirstName', $fFirstName);
+   $statement->bindValue(':fLastName', $fLastName);
    $statement->execute();     
    // if the statement is successfully executed, execute() returns true
    // false otherwise
@@ -251,16 +250,17 @@ function removeFriend($userID, $friendID)
    $statement->closeCursor();
 }
 
-function removeBlocked($userID, $blockedID)
+function removeBlocked($userID, $bFirstName, $bLastName)
 {
    global $db;
 
    $query = "DELETE FROM blocked
-	         WHERE userID = :userID AND blockedID = :blockedID";
+	         WHERE userID = :userID AND bFirstName = :bFirstName AND bLastName = :bLastName";
 
    $statement = $db->prepare($query);
    $statement->bindValue(':userID', $userID);
-   $statement->bindValue(':blockedID', $blockedID);
+   $statement->bindValue(':bFirstName', $bFirstName);
+   $statement->bindValue(':bLastName', $bLastName);
    $statement->execute();     
    // if the statement is successfully executed, execute() returns true
    // false otherwise
